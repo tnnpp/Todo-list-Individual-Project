@@ -1,7 +1,7 @@
 import Image from "next/image";
-import dbConnect from '../../../lib/mongodb';
-import Item from '../../../models/Item';
-import User from '../../../models/User';
+import dbConnect from '@/lib/mongodb';
+import Item from '@/models/Item';
+import User from '@/models/User';
 
 export default async function Home() {
   await dbConnect();
