@@ -12,6 +12,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import toast, { Toaster } from 'react-hot-toast';
 
 export default function ItemCard({ data, refetchItems }) {
     const colorSchema = {
@@ -35,6 +36,7 @@ export default function ItemCard({ data, refetchItems }) {
             console.log(result.message);
 
             if (res.ok) {
+                toast.success("Successfully change status!")
                 // Refetch items immediately after status change
                 if (refetchItems) refetchItems();
             } else {
@@ -45,11 +47,31 @@ export default function ItemCard({ data, refetchItems }) {
         }
     };
 
+    const handleDelete = async () =>{
+        try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/item/delete/${data._id}`, {
+                method: 'DELETE',
+            });
+            const result = await res.json();
+            console.log(result.message);
+
+            if (res.ok) {
+                toast.success("Successfully delete!")
+                if (refetchItems) refetchItems();
+            } else {
+                console.error("Failed to delete status:", result.message);
+            }
+        }catch (err) {
+        console.error('Error delete status:', err);
+     }
+    }
+
     return (
         <div
             className="flex items-center justify-between overflow-y-auto overflow-x-clip w-full py-5 rounded-2xl"
             style={{ backgroundColor: cardColor, color: textColor }}
         >
+            <Toaster/>
             <div className="mx-10">
                 <h2 className="text-2xl">{data.name}</h2>
                 <p>{data.description || ""}</p>
@@ -71,9 +93,9 @@ export default function ItemCard({ data, refetchItems }) {
                         </DropdownMenuRadioGroup>
                     </DropdownMenuContent>
                 </DropdownMenu>
-                <button className="cursor-pointer">
+                <Button className="cursor-pointer bg-transparent hover:text-red-400 hover:bg-transparent" onClick={() => handleDelete()}>
                     <MdDeleteOutline size={24} />
-                </button>
+                </Button>
             </div>
         </div>
     );
