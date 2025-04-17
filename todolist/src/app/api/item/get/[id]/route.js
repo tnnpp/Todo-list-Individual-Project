@@ -3,7 +3,7 @@ import Item from "@/models/Item";
 import dbConnect from "@/lib/mongodb";
 import { NextResponse } from "next/server";
 export async function GET(request, context) {
-    const { id } = context.params;
+    const { id } = await context.params;
     try{
         await dbConnect();
         const data = await Item.find({ 'userId': id });

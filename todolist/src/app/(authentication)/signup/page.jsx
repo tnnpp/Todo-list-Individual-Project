@@ -32,7 +32,7 @@ export default function SignUp() {
       toast.error(result.message || "Something went wrong!");
       return;
     } else {
-      toast.success('Successfully Sign Up!.')
+      toast.success('Successfully Sign Up!')
       router.push("/login");
     }
   };

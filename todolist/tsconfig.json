@@ -34,7 +34,7 @@
     ".next/types/**/*.ts",
     "**/*.ts",
     "**/*.tsx"
-, "src/components/ui/dropdown-menu.jsx"  ],
+, "src/components/ui/dropdown-menu.jsx", "src/components/ui/dialog.jsx"  ],
   "exclude": [
     "node_modules"
   ]
