@@ -29,10 +29,6 @@ export default function Dashboard() {
     setIsLoading(false)
   }
 
-  if (!session) {
-    return <p>You’re not signed in</p>;
-  }
-
   return (
     <div className="flex h-screen">
       <Navbar />
@@ -46,19 +42,23 @@ export default function Dashboard() {
             
           </div>
           {!isLoading ? (<div className="flex gap-5 w-full h-[100%]  overflow-clip">
-            <div className="mt-7 bg-white w-[33%] h-[100%]">
+            <div className="flex flex-col gap-4 mt-7 w-[33%] h-[100%]">
               <p className="text-[#15101C] text-2xl">To Do Items -</p>
               {data.map((i, index)=>(
-                <ItemCard key={index} cardColor='#15101C' textColor='9E78CF' data={i}/>
+                <ItemCard key={index} status={'todo'} data={i}/>
               ))}
             </div>
-            <div className="mt-7 bg-white w-[33%] h-[100%]">
-              <p className="text-[#1A2A3E] text-2xl">In Progress Items -</p>
-
+            <div className="flex flex-col gap-4 mt-7 w-[33%] h-[100%]">
+              <p className="text-[#1A2A3E] text-2xl m">In Progress Items -</p>
+              {data.map((i, index)=>(
+                <ItemCard key={index} status={'inProgress'} data={i}/>
+              ))}
             </div>
-            <div className="mt-7 bg-white w-[33%] h-[100%]">
+            <div className="flex flex-col gap-4 mt-7 w-[33%] h-[100%]">
               <p className="text-[#1D3A2E] text-2xl">Done Items -</p>
-
+              {data.map((i, index)=>(
+                <ItemCard key={index} status={'done'} data={i}/>
+              ))}
             </div>
 
           </div>) : <div>loading</div>  }

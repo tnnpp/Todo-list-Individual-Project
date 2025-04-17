@@ -6,7 +6,7 @@ export default function Navbar(){
     const { data: session } = useSession();
 
     if (!session) {
-        return <p>You’re not signed in</p>;
+        return <p>Loading session</p>;
       }
     
     return(
