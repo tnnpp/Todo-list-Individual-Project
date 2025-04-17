@@ -27,7 +27,7 @@ export const authOptions = {
           if (!isValid) {
             throw new Error("Invalid password");
           }
-          return { id: user._id, email: user.email };
+          return { id: user._id, email: user.email, username: user.username };
           }
           catch (error) {
             console.log("Error in authorization: ", error);
@@ -46,6 +46,7 @@ export const authOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+        token.username = user.username;
         token.email = user.email;
       }
       return token;
@@ -53,6 +54,7 @@ export const authOptions = {
     async session({ session, token }) {
       if (token) {
         session.user.id = token.id;
+        session.user.username = token.username;
         session.user.email = token.email;
       }
       return session;

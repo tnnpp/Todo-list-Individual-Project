@@ -20,10 +20,6 @@ const ItemSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
-  updateAt : {
-    type: Date,
-    default: Date.now
-  },
 });
 
 export default mongoose.models.Item || mongoose.model('Item', ItemSchema);
