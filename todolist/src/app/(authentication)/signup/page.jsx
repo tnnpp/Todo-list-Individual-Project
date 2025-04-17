@@ -4,6 +4,9 @@ import { useForm } from "react-hook-form";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import toast, { Toaster } from 'react-hot-toast';
 
 export default function SignUp() {
   const {
@@ -13,15 +16,37 @@ export default function SignUp() {
     watch,
   } = useForm();
 
-  const onSubmit = (data) => {
-    console.log("Registering with:", data);
-    // Send data to API/register endpoint
+  const password = watch("password");
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  const onSubmit = async (data) => {
+    setLoading(true);
+
+    const res = await fetch("/api/auth/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    const result = await res.json();
+    if (!res.ok) {
+      setLoading(false);
+      toast.error(result)
+      return;
+    } else {
+      toast.success('Successfully Sign Up!.')
+    }
+    router.push("/login");
+
+
   };
 
-  const password = watch("password");
 
   return (
     <div className="flex items-center justify-center min-h-screen ">
+      <Toaster />
       <Card className="w-full max-w-md shadow-lg p-6 rounded-2xl">
         <CardContent>
           <h2 className="text-2xl font-bold mb-6 text-center">Register</h2>
