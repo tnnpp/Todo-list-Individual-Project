@@ -1,12 +1,11 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { compare } from "bcryptjs";
-import User from "@/models/User"; 
-import dbConnect from '@/lib/mongodb';
+import bcrypt from "bcryptjs"; 
+import User from "@/models/User";
+import dbConnect from "@/lib/mongodb";
 
 export const authOptions = {
   providers: [
-    // Credentials provider for email/password authentication
     CredentialsProvider({
       name: "Credentials",
       credentials: {
@@ -14,29 +13,34 @@ export const authOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        await dbConnect(); // Connect to DB (you may use your own DB connection logic)
+        const { email, password } = credentials;
 
-        // Find user by email
-        const user = await User.findOne({ email: credentials?.email });
+        try {
+          await dbConnect();
+          const user = await User.findOne({email});
 
-        // If no user is found, return null
-        if (!user) return null;
+          if (!user) {
+            throw new Error("User not found");
+          }
+          const isValid = await bcrypt.compare(password, user.password);
 
-        // Compare password (use bcryptjs or bcrypt for hashing)
-        const isValid = await compare(credentials?.password || "", user.password);
-
-        if (!isValid) return null; // If password doesn't match, return null
-
-        // Return the user object
-        return { id: user._id, email: user.email };
+          if (!isValid) {
+            throw new Error("Invalid password");
+          }
+          return { id: user._id, email: user.email };
+          }
+          catch (error) {
+            console.log("Error in authorization: ", error);
+            return null; 
+          }
       },
     }),
   ],
   pages: {
-    signIn: "/login", // Custom login page (optional)
+    signIn: "/login",
   },
   session: {
-    strategy: "jwt", // Use JWT for session management
+    strategy: "jwt",
   },
   callbacks: {
     async jwt({ token, user }) {
@@ -56,4 +60,5 @@ export const authOptions = {
   },
 };
 
-export default NextAuth(authOptions);
+const handler = NextAuth(authOptions)
+export { handler as GET, handler as POST}

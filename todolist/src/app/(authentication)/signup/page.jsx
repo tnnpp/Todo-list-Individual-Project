@@ -17,12 +17,9 @@ export default function SignUp() {
   } = useForm();
 
   const password = watch("password");
-  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const onSubmit = async (data) => {
-    setLoading(true);
-
     const res = await fetch("/api/auth/register", {
       method: "POST",
       headers: {
@@ -32,15 +29,12 @@ export default function SignUp() {
     });
     const result = await res.json();
     if (!res.ok) {
-      setLoading(false);
-      toast.error(result)
+      toast.error(result.message || "Something went wrong!");
       return;
     } else {
       toast.success('Successfully Sign Up!.')
+      router.push("/login");
     }
-    router.push("/login");
-
-
   };
 
 
