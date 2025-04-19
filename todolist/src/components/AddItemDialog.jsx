@@ -73,7 +73,7 @@ export default function AddItemDialog({ userId, refetchItems }) {
             <Input
               className="bg-white border-1 border-[#3E1671]"
               placeholder="Enter task description"
-              {...register("description", { required: false, maxLength: 50 })}
+              {...register("description", { required: false, maxLength: 200 })}
             />
           </div>
           <Button type="submit" className="bg-[#9E78CF] w-full">Submit</Button>

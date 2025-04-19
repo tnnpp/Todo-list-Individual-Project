@@ -65,8 +65,10 @@ export default function Dashboard() {
   return (
     <div className="flex h-screen">
       <Toaster />
-      <Navbar />
-      <div className="flex items-center justify-center w-[85%] h-[100%]">
+      <div className="hidden lg:block ">
+        <Navbar />
+      </div>
+      <div className="flex items-center  justify-center w-[100%] h-[100%]">
         <div className="w-[95%] h-[90%] overflow-clip">
           <div className="flex gap-4">
             <Input
@@ -79,20 +81,20 @@ export default function Dashboard() {
           </div>
 
           {!isLoading ? (
-            <div className="flex gap-5 w-full h-[100%]">
-              <div className="flex flex-col gap-4 mt-7 w-[33%] h-[100%]">
+            <div className="flex flex-col lg:flex-row gap-5 w-full h-[100%]">
+              <div className="flex flex-col  gap-4 mt-7 lg:w-[33%] h-[100%]">
                 <p className="text-[#15101C] text-2xl">To Do Items</p>
                 {todoItems.map((i, index) => (
                   <ItemCard key={index} data={i} refetchItems={fetchData} />
                 ))}
               </div>
-              <div className="flex flex-col gap-4 mt-7 w-[33%] h-[100%]">
+              <div className="flex flex-col gap-4 mt-7  lg:w-[33%] h-[100%]">
                 <p className="text-[#1A2A3E] text-2xl">In Progress Items</p>
                 {inProgressItems.map((i, index) => (
                   <ItemCard key={index}  data={i} refetchItems={fetchData} />
                 ))}
               </div>
-              <div className="flex flex-col gap-4 mt-7 w-[33%] h-[100%]">
+              <div className="flex flex-col gap-4 mt-7 lg:w-[33%] h-[100%]">
                 <p className="text-[#1D3A2E] text-2xl">Done Items</p>
                 {doneItems.map((i, index) => (
                   <ItemCard key={index}  data={i} refetchItems={fetchData} />

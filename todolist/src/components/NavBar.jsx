@@ -2,7 +2,7 @@
 import { useSession } from "next-auth/react";
 import { signOut } from "next-auth/react";
 import { Button } from "./ui/button";
-export default function Navbar(){
+export default function Navbar({className}){
     const { data: session } = useSession();
 
     if (!session) {
@@ -10,7 +10,7 @@ export default function Navbar(){
       }
     
     return(
-        <div className="flex flex-col justify-between h-screen w-[15%] bg-white">
+        <div className="flex flex-col justify-between h-screen w-[15vw] bg-white">
             <div>
             <h1 className="ml-10 mt-10">Welcome</h1>
             <h2 className="ml-10 mt-5 text-2xl">{session.user.username} !</h2>
