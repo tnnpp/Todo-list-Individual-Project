@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-import dbConnect from '@/lib/mongodb';
-import User from "@/models/User"; 
-import toast from "react-hot-toast";
+import { ensureDatabase, sql } from "@/lib/neon";
 
 export async function POST(req: Request) {
   const { username, email, password } = await req.json();
@@ -12,17 +10,24 @@ export async function POST(req: Request) {
   }
 
   try {
-    await dbConnect();
-    const existingUser = await User.findOne({ email });
+    await ensureDatabase();
+    const [existingUser] = await sql`
+      SELECT id
+      FROM users
+      WHERE email = ${email}
+      LIMIT 1
+    `;
 
     if (existingUser) {
-      toast.error('User already exists')
       return NextResponse.json({ message: "User already exists" }, { status: 400 });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    await User.create({ username, email, password: hashedPassword });
+    await sql`
+      INSERT INTO users (username, email, password)
+      VALUES (${username}, ${email}, ${hashedPassword})
+    `;
 
     return NextResponse.json({ message: "User created successfully" }, { status: 201 });
   } catch (err) {

@@ -1,7 +1,6 @@
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs"; 
-import User from "@/models/User";
-import dbConnect from "@/lib/mongodb";
+import { ensureDatabase, sql } from "@/lib/neon";
 
 export const authOptions = {
     providers: [
@@ -15,8 +14,13 @@ export const authOptions = {
           const { email, password } = credentials;
   
           try {
-            await dbConnect();
-            const user = await User.findOne({email});
+            await ensureDatabase();
+            const [user] = await sql`
+              SELECT id, email, username, password
+              FROM users
+              WHERE email = ${email}
+              LIMIT 1
+            `;
   
             if (!user) {
               throw new Error("User not found");
@@ -26,7 +30,7 @@ export const authOptions = {
             if (!isValid) {
               throw new Error("Invalid password");
             }
-            return { id: user._id, email: user.email, username: user.username };
+            return { id: user.id, email: user.email, username: user.username };
             }
             catch (error) {
               console.log("Error in authorization: ", error);
