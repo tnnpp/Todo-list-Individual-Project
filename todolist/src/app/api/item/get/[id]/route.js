@@ -12,6 +12,7 @@ export async function GET(request, context) {
                 name,
                 description,
                 status,
+                priority,
                 created_at AS "createdAt"
             FROM items
             WHERE user_id = ${id}

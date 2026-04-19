@@ -42,8 +42,14 @@ async function initializeSchema() {
       name text NOT NULL,
       description text,
       status text NOT NULL DEFAULT 'todo' CHECK (status IN ('todo', 'inProgress', 'done')),
+      priority text NOT NULL DEFAULT 'medium' CHECK (priority IN ('low', 'medium', 'high')),
       created_at timestamptz NOT NULL DEFAULT now()
     )
+  `;
+
+  await sql`
+    ALTER TABLE items
+    ADD COLUMN IF NOT EXISTS priority text NOT NULL DEFAULT 'medium'
   `;
 
   await sql`CREATE INDEX IF NOT EXISTS items_user_id_idx ON items (user_id)`;
