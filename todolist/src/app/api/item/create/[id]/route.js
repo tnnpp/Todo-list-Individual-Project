@@ -4,10 +4,15 @@ import { ensureDatabase, sql } from "@/lib/neon";
 
 export async function POST(req, context) {
   const { id } = await context.params;
-  const { name, description} = await req.json();
+  const { name, description, priority } = await req.json();
+  const validPriorities = new Set(["low", "medium", "high"]);
+  const normalizedPriority = priority || "medium";
 
   if ( !name ) {
     return NextResponse.json({ message: "Missing name" }, { status: 400 });
+  }
+  if (!validPriorities.has(normalizedPriority)) {
+    return NextResponse.json({ message: "Invalid priority" }, { status: 400 });
   }
 
   try {
@@ -23,8 +28,8 @@ export async function POST(req, context) {
       return NextResponse.json({ message: "Invalid user" }, { status: 400 });
     }
     await sql`
-      INSERT INTO items (user_id, name, description, status)
-      VALUES (${id}, ${name}, ${description || null}, 'todo')
+      INSERT INTO items (user_id, name, description, status, priority)
+      VALUES (${id}, ${name}, ${description || null}, 'todo', ${normalizedPriority})
     `;
 
     return NextResponse.json({ message: "Item created successfully" }, { status: 201 });
