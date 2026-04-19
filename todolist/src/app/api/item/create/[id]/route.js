@@ -1,10 +1,6 @@
 "use server"
 import { NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
-import dbConnect from '@/lib/mongodb';
-import User from "@/models/User"; 
-import toast from "react-hot-toast";
-import Item from "@/models/Item";
+import { ensureDatabase, sql } from "@/lib/neon";
 
 export async function POST(req, context) {
   const { id } = await context.params;
@@ -15,13 +11,21 @@ export async function POST(req, context) {
   }
 
   try {
-    await dbConnect();
-    const existingUser = await User.findById(id);
+    await ensureDatabase();
+    const [existingUser] = await sql`
+      SELECT id
+      FROM users
+      WHERE id = ${id}
+      LIMIT 1
+    `;
 
     if (!existingUser) {
       return NextResponse.json({ message: "Invalid user" }, { status: 400 });
     }
-    await Item.create({ userId:id, name, description, status:"todo" });
+    await sql`
+      INSERT INTO items (user_id, name, description, status)
+      VALUES (${id}, ${name}, ${description || null}, 'todo')
+    `;
 
     return NextResponse.json({ message: "Item created successfully" }, { status: 201 });
   } catch (err) {
